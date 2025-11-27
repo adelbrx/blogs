@@ -2,7 +2,6 @@
   position: relative;
   padding: 48px clamp(20px, 5vw, 80px) 72px;
   width: 100vw;
-  overflow-x: hidden;
   color: #0c111a;
 }
 
