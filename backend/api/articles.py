@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from backend.schemas.article import ArticleCreate, ArticleResponse
 from backend.services.article_service import ArticleService
@@ -31,6 +31,14 @@ def read_articles(service: ArticleService = Depends(get_article_service)):
     return service.get_articles()
 
 
+@router.get("/articles/search", response_model=List[ArticleResponse])
+def search_articles(q: str, service: ArticleService = Depends(get_article_service)):
+    """
+    Search articles by title or content.
+    """
+    return service.search_articles(q)
+
+
 @router.get("/articles/{article_id}", response_model=ArticleResponse)
 def read_article(article_id: int, service: ArticleService = Depends(get_article_service)):
     """
@@ -40,3 +48,14 @@ def read_article(article_id: int, service: ArticleService = Depends(get_article_
     if article is None:
         raise HTTPException(status_code=404, detail="Article not found")
     return article
+
+
+@router.delete("/articles/{article_id}", status_code=204)
+def delete_article(article_id: int, service: ArticleService = Depends(get_article_service)):
+    """
+    Delete an article by ID.
+    """
+    deleted = service.delete_article(article_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return Response(status_code=204)

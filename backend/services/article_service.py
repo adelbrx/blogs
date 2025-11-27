@@ -30,3 +30,16 @@ class ArticleService:
         if article is None:
             return None
         return ArticleResponse(id=article.id, title=article.title, content=article.content)
+
+    def search_articles(self, query: str) -> List[ArticleResponse]:
+        """
+        Search articles by title or content containing the query string.
+        """
+        articles = self.article_repository.search_articles(query)
+        return [ArticleResponse(id=article.id, title=article.title, content=article.content) for article in articles]
+
+    def delete_article(self, article_id: int) -> bool:
+        """
+        Delete an article by ID. Returns True if deleted, False if not found.
+        """
+        return self.article_repository.delete_article(article_id)
