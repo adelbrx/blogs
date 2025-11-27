@@ -149,6 +149,14 @@
   flex-wrap: wrap;
 }
 
+.section-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .kicker {
   font-size: 12px;
   letter-spacing: 0.12em;
@@ -172,6 +180,37 @@
   background: #0f172a;
   color: #f8fafc;
   font-size: 12px;
+}
+
+.search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #ffffffcc;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 12px 30px -20px #0f172a66;
+}
+
+.search-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.search input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  min-width: 180px;
+  color: #0c111a;
+}
+
+.search input::placeholder {
+  color: #94a3b8;
 }
 
 .pill-strong {

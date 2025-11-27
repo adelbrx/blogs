@@ -7,6 +7,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const ARTICLES_URL =
   import.meta.env.VITE_ARTICLES_URL ||
   `${API_BASE_URL.replace(/\/$/, '')}/api/articles/`
+const SEARCH_URL = `${ARTICLES_URL.replace(/\/$/, '')}/search`
 
 function App() {
   const [articles, setArticles] = useState([])
@@ -15,31 +16,48 @@ function App() {
   const [error, setError] = useState('')
   const [creating, setCreating] = useState(false)
   const [deletingId, setDeletingId] = useState(null)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const selectedArticle = useMemo(
     () => articles.find((article) => article.id === selectedId) || articles[0],
     [articles, selectedId]
   )
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const res = await fetch(ARTICLES_URL)
-        if (!res.ok) throw new Error('Failed to load articles')
-        const data = await res.json()
-        setArticles(data)
-        setError('')
-        if (data.length) {
-          setSelectedId((prev) => prev ?? data[0].id)
-        }
-      } catch (err) {
-        setError(err.message || 'Something went wrong')
-      } finally {
-        setLoading(false)
-      }
+  const applyArticles = (data) => {
+    setArticles(data)
+    setSelectedId((prev) => {
+      if (data.some((article) => article.id === prev)) return prev
+      return data[0]?.id ?? null
+    })
+  }
+
+  const fetchArticles = async (url) => {
+    setLoading(true)
+    try {
+      const res = await fetch(url)
+      if (!res.ok) throw new Error('Failed to load articles')
+      const data = await res.json()
+      applyArticles(data)
+      setError('')
+    } catch (err) {
+      setError(err.message || 'Something went wrong')
+    } finally {
+      setLoading(false)
     }
-    fetchArticles()
-  }, [])
+  }
+
+  useEffect(() => {
+    const term = searchTerm.trim()
+    if (term === '') {
+      fetchArticles(ARTICLES_URL)
+      return
+    }
+    const handle = setTimeout(() => {
+      const url = `${SEARCH_URL}?q=${encodeURIComponent(term)}`
+      fetchArticles(url)
+    }, 300)
+    return () => clearTimeout(handle)
+  }, [searchTerm])
 
   const handleCreate = async (payload) => {
     setCreating(true)
@@ -117,8 +135,22 @@ function App() {
               <p className="kicker">Latest</p>
               <h2>Articles</h2>
             </div>
-            <div className="pill">
-              API: <span className="pill-strong">{ARTICLES_URL}</span>
+            <div className="section-actions">
+              <div className="search">
+                <label className="search-label" htmlFor="search-input">
+                  Search
+                </label>
+                <input
+                  id="search-input"
+                  type="text"
+                  placeholder="Find by title or content"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="pill">
+                API: <span className="pill-strong">{ARTICLES_URL}</span>
+              </div>
             </div>
           </div>
 
