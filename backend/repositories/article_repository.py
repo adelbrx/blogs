@@ -20,6 +20,14 @@ class ArticleRepository:
     def get_article_by_id(self, article_id: int):
         return self.db.query(Article).filter(Article.id == article_id).first()
 
+    def delete_article(self, article_id: int) -> bool:
+        article = self.get_article_by_id(article_id)
+        if not article:
+            return False
+        self.db.delete(article)
+        self.db.commit()
+        return True
+
     def search_articles(self, query: str):
         """Return articles whose title or content matches the query."""
         pattern = f"%{query}%"
@@ -28,11 +36,3 @@ class ArticleRepository:
             .filter(or_(Article.title.ilike(pattern), Article.content.ilike(pattern)))
             .all()
         )
-
-    def delete_article(self, article_id: int):
-        article = self.get_article_by_id(article_id)
-        if article is None:
-            return False
-        self.db.delete(article)
-        self.db.commit()
-        return True

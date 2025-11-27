@@ -14,6 +14,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [creating, setCreating] = useState(false)
+  const [deletingId, setDeletingId] = useState(null)
 
   const selectedArticle = useMemo(
     () => articles.find((article) => article.id === selectedId) || articles[0],
@@ -62,13 +63,35 @@ function App() {
     }
   }
 
+  const handleDelete = async (articleId) => {
+    const confirmDelete = window.confirm('Delete this article? This cannot be undone.')
+    if (!confirmDelete) return
+    setDeletingId(articleId)
+    try {
+      const res = await fetch(`${ARTICLES_URL}${articleId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Unable to delete article')
+      setArticles((prev) => {
+        const next = prev.filter((article) => article.id !== articleId)
+        if (selectedId === articleId) {
+          setSelectedId(next[0]?.id ?? null)
+        }
+        return next
+      })
+      setError('')
+    } catch (err) {
+      setError(err.message || 'Unable to delete article')
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
   return (
     <div className="page">
       <div className="ambient ambient-1" />
       <div className="ambient ambient-2" />
       <div className="ambient ambient-3" />
       <header className="hero">
-        <div className="eyebrow">ESGI · Stories</div>
+        <div className="eyebrow">ESGI - Stories</div>
         <h1>
           Craft bold stories
           <span className="accent"> and share them</span>
@@ -102,7 +125,7 @@ function App() {
           {loading ? (
             <div className="panel loading">
               <div className="spinner" />
-              <p>Loading stories…</p>
+              <p>Loading stories...</p>
             </div>
           ) : error ? (
             <div className="panel error">
@@ -136,6 +159,16 @@ function App() {
               <p className="kicker">Focus</p>
               <h3>{selectedArticle.title}</h3>
               <p className="detail-body">{selectedArticle.content}</p>
+              <div className="detail-actions">
+                <button
+                  className="ghost danger"
+                  type="button"
+                  onClick={() => handleDelete(selectedArticle.id)}
+                  disabled={deletingId === selectedArticle.id}
+                >
+                  {deletingId === selectedArticle.id ? 'Deleting...' : 'Delete article'}
+                </button>
+              </div>
             </div>
           )}
         </aside>
