@@ -1,12 +1,23 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from backend.core.database import engine, Base
 
-import backend.models  # ensure models are imported so metadata is populated
-from backend.api import articles
-from backend.core.database import Base, engine
-
-# Create database tables at startup (SQLite by default).
-Base.metadata.create_all(bind=engine)
+import backend.models
 
 app = FastAPI()
 
-app.include_router(articles.router, prefix="/api", tags=["articles"])
+# create tables from models
+Base.metadata.create_all(bind=engine)
+
+
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
