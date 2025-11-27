@@ -1,8 +1,8 @@
 .page {
   position: relative;
   padding: 48px clamp(20px, 5vw, 80px) 72px;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100vw;
+  overflow-x: hidden;
   color: #0c111a;
 }
 
@@ -32,6 +32,8 @@
   padding: 28px 0 20px;
   display: grid;
   gap: 12px;
+  width: 100%;
+  margin: 0;
 }
 
 .eyebrow {
@@ -133,7 +135,8 @@
   gap: 24px;
   grid-template-columns: 2fr 1fr;
   align-items: start;
-  margin-top: 22px;
+  margin: 22px 0 0;
+  width: 100%;
 }
 
 .column {
@@ -219,7 +222,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 14px;
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import CreateArticle from './CreateArticle'
 import Article from './Article'
 import './App.css'
@@ -23,15 +23,15 @@ function App() {
     [articles, selectedId]
   )
 
-  const applyArticles = (data) => {
+  const applyArticles = useCallback((data) => {
     setArticles(data)
     setSelectedId((prev) => {
       if (data.some((article) => article.id === prev)) return prev
       return data[0]?.id ?? null
     })
-  }
+  }, [])
 
-  const fetchArticles = async (url) => {
+  const fetchArticles = useCallback(async (url) => {
     setLoading(true)
     try {
       const res = await fetch(url)
@@ -44,7 +44,7 @@ function App() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [applyArticles])
 
   useEffect(() => {
     const term = searchTerm.trim()
@@ -148,9 +148,6 @@ function App() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <div className="pill">
-                API: <span className="pill-strong">{ARTICLES_URL}</span>
-              </div>
             </div>
           </div>
 
@@ -162,7 +159,7 @@ function App() {
           ) : error ? (
             <div className="panel error">
               <p>{error}</p>
-              <small>Check that the backend is running on the API URL above.</small>
+              <small>Check that the backend is running and reachable.</small>
             </div>
           ) : (
             <div className="grid">
