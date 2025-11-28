@@ -22,6 +22,15 @@ Apps:
 Notes:
 - Backend seeds 6 demo articles at container start if the DB is empty.
 - SQLite file lives in the `backend_data` volume (`/data/test.db` in the container).
+- Auth endpoints live under `/api/auth`:
+  - `POST /api/auth/register` (email, password[, full_name]) → access + refresh tokens
+  - `POST /api/auth/login` → access + refresh tokens
+  - `POST /api/auth/refresh` → new access/refresh tokens
+  - `GET /api/auth/me` → current user (requires `Authorization: Bearer <token>` and `X-CSRF-Token`)
+- Configure secrets via environment variables:
+  - `JWT_SECRET` (default: `blogs-secret-key`)
+  - `ACCESS_TOKEN_EXPIRE_MINUTES` (default: 60)
+  - `REFRESH_TOKEN_EXPIRE_MINUTES` (default: 10080)
 
 ## Run locally without Docker
 Prereqs: Python 3.12+, Node 18+ (or 20+), npm.

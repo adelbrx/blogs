@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.api import articles
+from backend.api import articles, auth
 from backend.core.database import Base, engine
 
 # ensure models are imported so Base has metadata
@@ -23,4 +23,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router, prefix="/api", tags=["auth"])
 app.include_router(articles.router, prefix="/api", tags=["articles"])

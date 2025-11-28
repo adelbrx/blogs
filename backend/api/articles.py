@@ -1,11 +1,14 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, Header, HTTPException, Response
 from sqlalchemy.orm import Session
 from backend.schemas.article import ArticleCreate, ArticleResponse
 from backend.services.article_service import ArticleService
 from backend.repositories.article_repository import ArticleRepository
 from backend.core.database import get_db
+from backend.api.auth import extract_bearer_token, get_auth_service
+from backend.schemas.auth_schema import UserResponse
+from backend.services.auth_service import AuthService
 
 router = APIRouter()
 
@@ -15,8 +18,21 @@ def get_article_service(db: Session = Depends(get_db)) -> ArticleService:
     return ArticleService(article_repository)
 
 
+def get_current_user(
+    authorization: str | None = Header(None),
+    x_csrf_token: str | None = Header(None),
+    auth_service: AuthService = Depends(get_auth_service),
+) -> UserResponse:
+    token = extract_bearer_token(authorization)
+    return auth_service.get_current_user(token, x_csrf_token)
+
+
 @router.post("/articles/", response_model=ArticleResponse)
-def create_article(article: ArticleCreate, service: ArticleService = Depends(get_article_service)):
+def create_article(
+    article: ArticleCreate,
+    service: ArticleService = Depends(get_article_service),
+    _: UserResponse = Depends(get_current_user),
+):
     """
     Endpoint to create a new article.
     """
@@ -24,7 +40,10 @@ def create_article(article: ArticleCreate, service: ArticleService = Depends(get
 
 
 @router.get("/articles/", response_model=List[ArticleResponse])
-def read_articles(service: ArticleService = Depends(get_article_service)):
+def read_articles(
+    service: ArticleService = Depends(get_article_service),
+    _: UserResponse = Depends(get_current_user),
+):
     """
     Endpoint to get all articles.
     """
@@ -32,7 +51,11 @@ def read_articles(service: ArticleService = Depends(get_article_service)):
 
 
 @router.get("/articles/search", response_model=List[ArticleResponse])
-def search_articles(q: str, service: ArticleService = Depends(get_article_service)):
+def search_articles(
+    q: str,
+    service: ArticleService = Depends(get_article_service),
+    _: UserResponse = Depends(get_current_user),
+):
     """
     Search articles by title or content.
     """
@@ -40,7 +63,11 @@ def search_articles(q: str, service: ArticleService = Depends(get_article_servic
 
 
 @router.get("/articles/{article_id}", response_model=ArticleResponse)
-def read_article(article_id: int, service: ArticleService = Depends(get_article_service)):
+def read_article(
+    article_id: int,
+    service: ArticleService = Depends(get_article_service),
+    _: UserResponse = Depends(get_current_user),
+):
     """
     Endpoint to get a single article by its ID.
     """
@@ -51,7 +78,11 @@ def read_article(article_id: int, service: ArticleService = Depends(get_article_
 
 
 @router.delete("/articles/{article_id}", status_code=204)
-def delete_article(article_id: int, service: ArticleService = Depends(get_article_service)):
+def delete_article(
+    article_id: int,
+    service: ArticleService = Depends(get_article_service),
+    _: UserResponse = Depends(get_current_user),
+):
     """
     Delete an article by ID.
     """
