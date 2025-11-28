@@ -1,22 +1,22 @@
-import { useState } from 'react'
+import { useState } from "react"
 
 const CreateArticle = ({ onCreate, busy = false }) => {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [status, setStatus] = useState('')
+  const [title, setTitle] = useState("")
+  const [content, setContent] = useState("")
+  const [status, setStatus] = useState("")
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setStatus('')
+    setStatus("")
     if (!title.trim() || !content.trim()) {
-      setStatus('Please provide a title and content.')
+      setStatus("Please provide a title and content.")
       return
     }
     const result = await onCreate({ title: title.trim(), content: content.trim() })
     if (result.ok) {
-      setStatus('Published ✔')
-      setTitle('')
-      setContent('')
+      setStatus("Published")
+      setTitle("")
+      setContent("")
     } else if (result.message) {
       setStatus(result.message)
     }
@@ -46,7 +46,7 @@ const CreateArticle = ({ onCreate, busy = false }) => {
           />
         </label>
         <button type="submit" className="cta" disabled={busy}>
-          {busy ? 'Publishing…' : 'Publish article'}
+          {busy ? "Publishing..." : "Publish article"}
         </button>
       </form>
       {status && <p className="status">{status}</p>}

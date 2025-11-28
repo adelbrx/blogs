@@ -428,3 +428,155 @@
     position: static;
   }
 }
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 48px 16px;
+  position: relative;
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 100%);
+  padding: 28px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #ffffffcc, #f5f9ffef);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 24px 40px -20px #0f172a55;
+  display: grid;
+  gap: 16px;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 30px 50px -22px #0f172a66;
+}
+
+.auth-card__header h2 {
+  margin: 0 0 6px;
+}
+
+.auth-card__header .lede {
+  margin: 0;
+  color: #334155;
+}
+
+.auth-card__body {
+  display: grid;
+  gap: 12px;
+}
+
+.auth-card__footer {
+  font-size: 14px;
+  color: #475569;
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field-label {
+  font-weight: 700;
+  color: #0c111a;
+}
+
+.input-shell {
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  border: 1px solid #d3d8e3;
+  background: #fff;
+  padding: 6px 10px;
+  gap: 8px;
+  box-shadow: 0 12px 30px -20px #0f172a66;
+}
+
+.input {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  color: #0c111a;
+  background: transparent;
+}
+
+.input-shell-error {
+  border-color: #ef4444;
+}
+
+.input-error {
+  border-color: #ef4444;
+}
+
+.peek {
+  border: none;
+  background: #0f172a0a;
+  color: #0f172a;
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.link.subtle {
+  color: #0f766e;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.alert {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecdd3;
+  font-size: 14px;
+}
+
+.error-text {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.btn {
+  cursor: pointer;
+  border: none;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn.w-full {
+  width: 100%;
+}
+
+.full-screen {
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+}
+
+.ghost-card {
+  background: #ffffffdd;
+}
